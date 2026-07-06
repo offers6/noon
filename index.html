@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Cairo', sans-serif; }
-        /* تأثير التذكرة المثقوبة الجانبي */
+        /* تأثير التذكرة المثقوبة الجانبي المطوّر */
         .ticket-edge {
             position: relative;
         }
@@ -16,156 +16,279 @@
             content: '';
             position: absolute;
             top: 50%;
-            width: 16px;
-            height: 16px;
-            background-color: #f8fafc; /* نفس لون الخلفية الأساسية للموقع */
+            width: 14px;
+            height: 14px;
+            background-color: #f8fafc; /* يتماشى مع خلفية الموقع */
             border-radius: 50%;
             transform: translateY(-50%);
             z-index: 10;
+            transition: all 0.3s;
         }
-        .ticket-edge::before { left: -9px; }
-        .ticket-edge::after { right: -9px; }
+        .ticket-edge::before { left: -8px; }
+        .ticket-edge::after { right: -8px; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col justify-between overflow-x-hidden relative select-none">
 
-    <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-amber-400/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
-    <div class="absolute top-[40%] right-[-10%] w-[600px] h-[600px] bg-sky-400/10 rounded-full blur-[150px] pointer-events-none z-0"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-amber-400/10 rounded-full blur-[80px] md:blur-[140px] pointer-events-none z-0"></div>
+    <div class="absolute top-[30%] right-[-10%] w-[350px] md:w-[700px] h-[350px] md:h-[700px] bg-sky-400/10 rounded-full blur-[90px] md:blur-[160px] pointer-events-none z-0"></div>
 
-    <header class="w-full max-w-5xl mx-auto pt-10 pb-6 px-4 text-center z-10">
-        <div class="inline-flex items-center gap-2 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full shadow-sm border border-slate-100 mb-4 animate-bounce">
-            <span class="flex h-2 w-2 rounded-full bg-emerald-500"></span>
-            <span class="text-xs font-bold text-slate-700 tracking-wide">أكواد حصرية ومجربة اليوم ✨</span>
+    <header class="w-full max-w-5xl mx-auto pt-12 pb-4 px-4 text-center z-10">
+        <div class="inline-flex items-center gap-2 bg-white shadow-sm border border-slate-100 px-4 py-1.5 rounded-full mb-4 animate-bounce">
+            <span class="flex h-2 w-2 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span class="text-xs font-bold text-slate-700">تحديث فوري للأكواد اليوم ✨</span>
         </div>
         <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            منصة <span class="bg-gradient-to-r from-amber-500 to-yellow-500 bg-clip-text text-transparent">الأكواد الذكية</span> 🛍️
+            منصة <span class="bg-gradient-to-r from-amber-500 to-amber-600 bg-clip-text text-transparent">الأكواد الذكية</span> 🛍️
         </h1>
-        <p class="text-sm md:text-base mt-3 text-slate-500 font-medium max-w-md mx-auto">
-            اضغط على أي كوبون تريد، سيتم نسخه تلقائياً ونقلك للمتجر مباشرة لتطبيق الخصم.
+        <p class="text-sm md:text-base mt-3 text-slate-500 font-medium max-w-md mx-auto px-2">
+            اضغط على أي كوبون، سيتم نسخه تلقائياً وتوجيهك للمتجر مباشرة لتطبيق الخصم.
         </p>
     </header>
 
-    <main class="container mx-auto px-4 py-4 max-w-xl flex-grow z-10">
-        <div class="space-y-6">
+    <section class="w-full max-w-4xl mx-auto px-4 mt-4 z-10">
+        <div class="bg-white/80 backdrop-blur-md p-3 rounded-2xl border border-slate-100 shadow-sm max-w-2xl mx-auto space-y-3">
+            <div class="relative">
+                <span class="absolute inset-y-0 right-3 flex items-center pr-1 text-slate-400">🔍</span>
+                <input id="searchInput" oninput="searchCoupons()" type="text" placeholder="ابحث عن متجر أو كود خصم..." class="w-full pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-amber-400 focus:bg-white transition-all text-right">
+            </div>
+            <div class="flex flex-wrap gap-2 justify-center text-xs font-bold">
+                <button onclick="filterCategory('all')" id="btn-all" class="filter-btn px-4 py-2 rounded-lg bg-amber-400 text-slate-950 transition-all shadow-sm">الكل</button>
+                <button onclick="filterCategory('noon')" id="btn-noon" class="filter-btn px-4 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">نون (Noon)</button>
+                <button onclick="filterCategory('fashion')" id="btn-fashion" class="filter-btn px-4 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">أزياء وموضة</button>
+            </div>
+        </div>
+    </section>
 
-            <div class="bg-white/90 backdrop-blur-md border border-slate-100 rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(245,158,11,0.08)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 bg-gradient-to-l from-red-500 to-rose-600 text-white text-[11px] font-bold px-4 py-1 rounded-bl-2xl shadow-sm tracking-wide">مصر 🇪🇬</div>
-                
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-400 flex items-center justify-center font-extrabold text-xl text-slate-950 shadow-sm shadow-amber-400/20">N</div>
-                    <div class="text-right">
-                        <h2 class="text-lg font-bold text-slate-900">كود خصم نون مصر</h2>
-                        <p class="text-slate-400 text-[11px]">يعمل على الإلكترونيات، الأزياء، والمستلزمات</p>
+    <main class="container mx-auto px-4 py-8 max-w-5xl flex-grow z-10">
+        <div id="couponsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <div class="coupon-card bg-white border border-slate-100 rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:shadow-[0_20px_40px_rgba(245,158,11,0.08)] transition-all duration-300 transform hover:-translate-y-1.5 relative overflow-hidden flex flex-col justify-between" data-store="noon" data-keywords="نون مصر egypt noon">
+                <div>
+                    <div class="absolute top-0 left-0 bg-gradient-to-r from-red-500 to-rose-600 text-white text-[10px] font-bold px-3 py-1 rounded-br-2xl shadow-sm">مصر 🇪🇬</div>
+                    <div class="flex items-center gap-3 mb-4 mt-2">
+                        <div class="w-12 h-12 rounded-2xl bg-yellow-400 flex items-center justify-center font-black text-xl text-slate-900 shadow-sm">N</div>
+                        <div class="text-right">
+                            <div class="flex items-center gap-1.5">
+                                <h2 class="text-base font-bold text-slate-900">نون مصر</h2>
+                                <span class="bg-emerald-50 text-emerald-600 text-[9px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-200/50">فعال ✅</span>
+                            </div>
+                            <p class="text-slate-400 text-xs mt-0.5">خصم إضافي على كافة المنتجات</p>
+                        </div>
                     </div>
                 </div>
-                
-                <button onclick="copyAndRedirect('ZWR', 'https://www.noon.com/egypt-ar/')" class="ticket-edge w-full bg-slate-950 hover:bg-slate-900 text-white py-4 px-6 rounded-2xl flex items-center justify-between transition-all duration-200 active:scale-[0.98] cursor-pointer group shadow-lg shadow-slate-950/10 mt-4">
-                    <span class="bg-amber-400 text-slate-950 px-4 py-1.5 rounded-xl font-mono text-xl font-black tracking-widest group-hover:scale-105 transition-transform">ZWR</span>
-                    <span class="text-xs font-bold text-amber-400 flex items-center gap-1 opacity-90 group-hover:opacity-100">انسخ وتوجه للمتجر 🚀</span>
-                </button>
+                <div>
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 bg-slate-50 p-2 rounded-xl mb-3">
+                        <span>🔥 استُخدم اليوم: 340 مرة</span>
+                        <span class="text-amber-600 font-bold">توفير حتى 15%</span>
+                    </div>
+                    <button onclick="copyAndRedirect('ZWR', 'https://www.noon.com/egypt-ar/')" class="ticket-edge w-full bg-slate-950 hover:bg-amber-500 hover:text-slate-950 text-white py-3.5 px-5 rounded-2xl flex items-center justify-between transition-all duration-300 active:scale-[0.98] cursor-pointer group shadow-md shadow-slate-950/5">
+                        <span class="bg-amber-400 text-slate-950 group-hover:bg-slate-950 group-hover:text-amber-400 px-3.5 py-1 rounded-xl font-mono text-lg font-black tracking-widest transition-all">ZWR</span>
+                        <span class="text-xs font-bold flex items-center gap-1">انسخ الخصم 🚀</span>
+                    </button>
+                </div>
             </div>
 
-            <div class="bg-white/90 backdrop-blur-md border border-slate-100 rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(5,150,105,0.08)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 bg-gradient-to-l from-emerald-600 to-green-600 text-white text-[11px] font-bold px-4 py-1 rounded-bl-2xl shadow-sm tracking-wide">السعودية 🇸🇦</div>
-                
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-400 flex items-center justify-center font-extrabold text-xl text-slate-950 shadow-sm shadow-amber-400/20">N</div>
-                    <div class="text-right">
-                        <h2 class="text-lg font-bold text-slate-900">كود خصم نون السعودية</h2>
-                        <p class="text-slate-400 text-[11px]">أعلى نسبة خصم متاحة حالياً لعملاء المملكة</p>
+            <div class="coupon-card bg-white border border-slate-100 rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:shadow-[0_20px_40px_rgba(16,185,129,0.08)] transition-all duration-300 transform hover:-translate-y-1.5 relative overflow-hidden flex flex-col justify-between" data-store="noon" data-keywords="نون السعودية saudi ksa noon">
+                <div>
+                    <div class="absolute top-0 left-0 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[10px] font-bold px-3 py-1 rounded-br-2xl shadow-sm">السعودية 🇸🇦</div>
+                    <div class="flex items-center gap-3 mb-4 mt-2">
+                        <div class="w-12 h-12 rounded-2xl bg-yellow-400 flex items-center justify-center font-black text-xl text-slate-900 shadow-sm">N</div>
+                        <div class="text-right">
+                            <div class="flex items-center gap-1.5">
+                                <h2 class="text-base font-bold text-slate-900">نون السعودية</h2>
+                                <span class="bg-emerald-50 text-emerald-600 text-[9px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-200/50">فعال ✅</span>
+                            </div>
+                            <p class="text-slate-400 text-xs mt-0.5">أعلى نسبة توفير متاحة بالمملكة</p>
+                        </div>
                     </div>
                 </div>
-                
-                <button onclick="copyAndRedirect('ZV124', 'https://www.noon.com/saudi-ar/')" class="ticket-edge w-full bg-slate-950 hover:bg-slate-900 text-white py-4 px-6 rounded-2xl flex items-center justify-between transition-all duration-200 active:scale-[0.98] cursor-pointer group shadow-lg shadow-slate-950/10 mt-4">
-                    <span class="bg-amber-400 text-slate-950 px-4 py-1.5 rounded-xl font-mono text-xl font-black tracking-widest group-hover:scale-105 transition-transform">ZV124</span>
-                    <span class="text-xs font-bold text-amber-400 flex items-center gap-1 opacity-90 group-hover:opacity-100">انسخ وتوجه للمتجر 🚀</span>
-                </button>
+                <div>
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 bg-slate-50 p-2 rounded-xl mb-3">
+                        <span>🔥 استُخدم اليوم: 512 مرة</span>
+                        <span class="text-emerald-600 font-bold">خصم فوري حصرى</span>
+                    </div>
+                    <button onclick="copyAndRedirect('ZV124', 'https://www.noon.com/saudi-ar/')" class="ticket-edge w-full bg-slate-950 hover:bg-amber-500 hover:text-slate-950 text-white py-3.5 px-5 rounded-2xl flex items-center justify-between transition-all duration-300 active:scale-[0.98] cursor-pointer group shadow-md shadow-slate-950/5">
+                        <span class="bg-amber-400 text-slate-950 group-hover:bg-slate-950 group-hover:text-amber-400 px-3.5 py-1 rounded-xl font-mono text-lg font-black tracking-widest transition-all">ZV124</span>
+                        <span class="text-xs font-bold flex items-center gap-1">انسخ الخصم 🚀</span>
+                    </button>
+                </div>
             </div>
 
-            <div class="bg-white/90 backdrop-blur-md border border-slate-100 rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(30,41,59,0.05)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 bg-gradient-to-l from-slate-800 to-slate-900 text-white text-[11px] font-bold px-4 py-1 rounded-bl-2xl shadow-sm tracking-wide">الإمارات 🇦🇪</div>
-                
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-400 flex items-center justify-center font-extrabold text-xl text-slate-950 shadow-sm shadow-amber-400/20">N</div>
-                    <div class="text-right">
-                        <h2 class="text-lg font-bold text-slate-900">كود خصم نون الإمارات</h2>
-                        <p class="text-slate-400 text-[11px]">توفير إضافي مميز على المنتجات المشحونة محلياً</p>
+            <div class="coupon-card bg-white border border-slate-100 rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:shadow-[0_20px_40px_rgba(30,41,59,0.06)] transition-all duration-300 transform hover:-translate-y-1.5 relative overflow-hidden flex flex-col justify-between" data-store="noon" data-keywords="نون الامارات uae noon">
+                <div>
+                    <div class="absolute top-0 left-0 bg-gradient-to-r from-slate-700 to-slate-900 text-white text-[10px] font-bold px-3 py-1 rounded-br-2xl shadow-sm">الإمارات 🇦🇪</div>
+                    <div class="flex items-center gap-3 mb-4 mt-2">
+                        <div class="w-12 h-12 rounded-2xl bg-yellow-400 flex items-center justify-center font-black text-xl text-slate-900 shadow-sm">N</div>
+                        <div class="text-right">
+                            <div class="flex items-center gap-1.5">
+                                <h2 class="text-base font-bold text-slate-900">نون الإمارات</h2>
+                                <span class="bg-emerald-50 text-emerald-600 text-[9px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-200/50">فعال ✅</span>
+                            </div>
+                            <p class="text-slate-400 text-xs mt-0.5">توفير مميز لمنتجات نون إكسبريس</p>
+                        </div>
                     </div>
                 </div>
-                
-                <button onclick="copyAndRedirect('XFF11', 'https://www.noon.com/uae-ar/')" class="ticket-edge w-full bg-slate-950 hover:bg-slate-900 text-white py-4 px-6 rounded-2xl flex items-center justify-between transition-all duration-200 active:scale-[0.98] cursor-pointer group shadow-lg shadow-slate-950/10 mt-4">
-                    <span class="bg-amber-400 text-slate-950 px-4 py-1.5 rounded-xl font-mono text-xl font-black tracking-widest group-hover:scale-105 transition-transform">XFF11</span>
-                    <span class="text-xs font-bold text-amber-400 flex items-center gap-1 opacity-90 group-hover:opacity-100">انسخ وتوجه للمتجر 🚀</span>
-                </button>
+                <div>
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 bg-slate-50 p-2 rounded-xl mb-3">
+                        <span>🔥 استُخدم اليوم: 189 مرة</span>
+                        <span class="text-slate-700 font-bold">عروض حصرية</span>
+                    </div>
+                    <button onclick="copyAndRedirect('XFF11', 'https://www.noon.com/uae-ar/')" class="ticket-edge w-full bg-slate-950 hover:bg-amber-500 hover:text-slate-950 text-white py-3.5 px-5 rounded-2xl flex items-center justify-between transition-all duration-300 active:scale-[0.98] cursor-pointer group shadow-md shadow-slate-950/5">
+                        <span class="bg-amber-400 text-slate-950 group-hover:bg-slate-950 group-hover:text-amber-400 px-3.5 py-1 rounded-xl font-mono text-lg font-black tracking-widest transition-all">XFF11</span>
+                        <span class="text-xs font-bold flex items-center gap-1">انسخ الخصم 🚀</span>
+                    </button>
+                </div>
             </div>
 
-            <div class="bg-white/90 backdrop-blur-md border border-slate-100 rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(2,132,199,0.08)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 bg-gradient-to-l from-sky-600 to-blue-600 text-white text-[11px] font-bold px-4 py-1 rounded-bl-2xl shadow-sm tracking-wide">ديفاكتو Defacto 👕</div>
-                
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 flex items-center justify-center font-extrabold text-xl text-white shadow-sm shadow-sky-500/20">D</div>
-                    <div class="text-right">
-                        <h2 class="text-lg font-bold text-slate-900">كود خصم ديفاكتو</h2>
-                        <p class="text-slate-400 text-[11px]">أقوى خصم على أحدث صيحات الموضة الكاجوال</p>
+            <div class="coupon-card bg-white border border-slate-100 rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:shadow-[0_20px_40px_rgba(2,132,199,0.08)] transition-all duration-300 transform hover:-translate-y-1.5 relative overflow-hidden flex flex-col justify-between" data-store="fashion" data-keywords="ديفاكتو defacto ملابس ازياء">
+                <div>
+                    <div class="absolute top-0 left-0 bg-gradient-to-r from-sky-600 to-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-br-2xl shadow-sm">Defacto 👕</div>
+                    <div class="flex items-center gap-3 mb-4 mt-2">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 flex items-center justify-center font-extrabold text-xl text-white shadow-sm">D</div>
+                        <div class="text-right">
+                            <div class="flex items-center gap-1.5">
+                                <h2 class="text-base font-bold text-slate-900">كود ديفاكتو</h2>
+                                <span class="bg-emerald-50 text-emerald-600 text-[9px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-200/50">فعال ✅</span>
+                            </div>
+                            <p class="text-slate-400 text-xs mt-0.5">أحدث خطوط الموضة الكاجوال</p>
+                        </div>
                     </div>
                 </div>
-                
-                <button onclick="copyAndRedirect('D67', 'https://www.defacto.com.eg/')" class="ticket-edge w-full bg-sky-600 hover:bg-sky-700 text-white py-4 px-6 rounded-2xl flex items-center justify-between transition-all duration-200 active:scale-[0.98] cursor-pointer group shadow-lg shadow-sky-600/10 mt-4">
-                    <span class="bg-white text-sky-600 px-4 py-1.5 rounded-xl font-mono text-xl font-black tracking-widest group-hover:scale-105 transition-transform">D67</span>
-                    <span class="text-xs font-bold text-sky-100 flex items-center gap-1 opacity-90 group-hover:opacity-100">انسخ وتوجه للمتجر 🚀</span>
-                </button>
+                <div>
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 bg-slate-50 p-2 rounded-xl mb-3">
+                        <span>🔥 استُخدم اليوم: 420 مرة</span>
+                        <span class="text-sky-600 font-bold">تخفيض إضافي 10%</span>
+                    </div>
+                    <button onclick="copyAndRedirect('D67', 'https://www.defacto.com.eg/')" class="ticket-edge w-full bg-sky-600 hover:bg-slate-950 text-white py-3.5 px-5 rounded-2xl flex items-center justify-between transition-all duration-300 active:scale-[0.98] cursor-pointer group shadow-md shadow-sky-600/5">
+                        <span class="bg-white text-sky-600 group-hover:bg-white group-hover:text-slate-950 px-3.5 py-1 rounded-xl font-mono text-lg font-black tracking-widest transition-all">D67</span>
+                        <span class="text-xs font-bold flex items-center gap-1">انسخ الخصم 🚀</span>
+                    </button>
+                </div>
             </div>
 
-            <div class="bg-white/90 backdrop-blur-md border border-slate-100 rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(239,68,68,0.08)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 bg-gradient-to-l from-slate-950 to-slate-900 text-white text-[11px] font-bold px-4 py-1 rounded-bl-2xl shadow-sm tracking-wide">نيمشي Namshi 👟</div>
-                
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-950 flex items-center justify-center font-extrabold text-xl text-white shadow-sm shadow-slate-950/20">🥾</div>
-                    <div class="text-right">
-                        <h2 class="text-lg font-bold text-slate-900">كود خصم نيمشي</h2>
-                        <p class="text-slate-400 text-[11px]">تخفيض إضافي مميز على أرقى البراندات والملابس</p>
+            <div class="coupon-card bg-white border border-slate-100 rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:shadow-[0_20px_40px_rgba(239,68,68,0.08)] transition-all duration-300 transform hover:-translate-y-1.5 relative overflow-hidden flex flex-col justify-between" data-store="fashion" data-keywords="نيمشي namshi احذية ملابس براندات">
+                <div>
+                    <div class="absolute top-0 left-0 bg-gradient-to-r from-slate-950 to-slate-800 text-white text-[10px] font-bold px-3 py-1 rounded-br-2xl shadow-sm">Namshi 👟</div>
+                    <div class="flex items-center gap-3 mb-4 mt-2">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-950 flex items-center justify-center text-xl shadow-sm">🥾</div>
+                        <div class="text-right">
+                            <div class="flex items-center gap-1.5">
+                                <h2 class="text-base font-bold text-slate-900">كود نيمشي</h2>
+                                <span class="bg-emerald-50 text-emerald-600 text-[9px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-200/50">فعال ✅</span>
+                            </div>
+                            <p class="text-slate-400 text-xs mt-0.5">أرقى البراندات العالمية</p>
+                        </div>
                     </div>
                 </div>
-                
-                <button onclick="copyAndRedirect('ACC20', 'https://www.namshi.com/')" class="ticket-edge w-full bg-slate-950 hover:bg-slate-900 text-white py-4 px-6 rounded-2xl flex items-center justify-between transition-all duration-200 active:scale-[0.98] cursor-pointer group shadow-lg shadow-slate-950/10 mt-4">
-                    <span class="bg-red-500 text-white px-4 py-1.5 rounded-xl font-mono text-xl font-black tracking-widest group-hover:scale-105 transition-transform">ACC20</span>
-                    <span class="text-xs font-bold text-slate-300 flex items-center gap-1 opacity-90 group-hover:opacity-100">انسخ وتوجه للمتجر 🚀</span>
-                </button>
+                <div>
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 bg-slate-50 p-2 rounded-xl mb-3">
+                        <span>🔥 استُخدم اليوم: 290 مرة</span>
+                        <span class="text-rose-600 font-bold">كوبون ممتاز</span>
+                    </div>
+                    <button onclick="copyAndRedirect('ACC20', 'https://www.namshi.com/')" class="ticket-edge w-full bg-slate-950 hover:bg-rose-600 text-white py-3.5 px-5 rounded-2xl flex items-center justify-between transition-all duration-300 active:scale-[0.98] cursor-pointer group shadow-md shadow-slate-950/5">
+                        <span class="bg-red-500 text-white px-3.5 py-1 rounded-xl font-mono text-lg font-black tracking-widest transition-all">ACC20</span>
+                        <span class="text-xs font-bold flex items-center gap-1">انسخ الخصم 🚀</span>
+                    </button>
+                </div>
             </div>
 
         </div>
+        
+        <div id="noResults" class="text-center py-12 text-slate-400 font-bold hidden">
+            <span class="text-3xl block mb-2">😢</span>
+            لم نجد أكواد تناسب بحثك حالياً، جرب كلمة أخرى!
+        </div>
     </main>
 
-    <footer class="w-full text-center py-6 text-slate-400 text-xs font-medium z-10 mt-10">
-        جميع الحقوق محفوظة © 2026 | تم التطوير بأعلى معايير الأمان والتوفير الذكي ✨
+    <footer class="w-full text-center py-6 text-slate-400 text-xs font-medium z-10 mt-10 border-t border-slate-100 bg-white/50">
+        جميع الحقوق محفوظة © 2026 | تم التطوير بأعلى معايير التوفير الذكي والتصميم السريع ✨
     </footer>
 
-    <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-slate-900/95 backdrop-blur-md text-white px-6 py-4 rounded-2xl text-sm font-bold shadow-[0_20px_50px_rgba(0,0,0,0.3)] hidden z-50 transition-all text-center border border-white/10 min-w-[310px]">
-        <div class="flex items-center justify-center gap-2">
-            <span class="text-xl">📋</span>
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-900/95 backdrop-blur-md text-white px-6 py-4 rounded-2xl text-sm font-bold shadow-xl hidden z-50 transition-all text-center border border-white/10 min-w-[290px] max-w-[90%] animate-fade-in">
+        <div class="flex items-center justify-center gap-2.5">
+            <span class="text-lg bg-amber-400/20 text-amber-400 p-1 rounded-lg">📋</span>
             <span id="toast-text">تم نسخ الكود بنجاح!</span>
         </div>
     </div>
 
     <script>
+        // دالة نسخ الكود والتحويل للمتجر
         function copyAndRedirect(code, targetUrl) {
             navigator.clipboard.writeText(code).then(() => {
-                
                 const toast = document.getElementById('toast');
                 const toastText = document.getElementById('toast-text');
                 
-                toastText.innerText = `تم نسخ الكود (${code}) بنجاح! جاري تحويلك للمتجر...`;
+                toastText.innerText = `تم نسخ الكود (${code}) بنجاح! جاري تحويلك الآن...`;
                 toast.classList.remove('hidden');
                 
                 setTimeout(() => {
                     toast.classList.add('hidden');
                     window.location.href = targetUrl;
-                }, 1100);
+                }, 1200);
                 
             }).catch(err => {
                 console.error('فشل النسخ التلقائي: ', err);
                 window.location.href = targetUrl;
             });
+        }
+
+        // دالة الفلترة حسب التصنيفات العليا
+        function filterCategory(category) {
+            const cards = document.querySelectorAll('.coupon-card');
+            
+            // تحديث تصميم الأزرار النشطة
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-400', 'text-slate-950', 'shadow-sm');
+                btn.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            const activeBtn = document.getElementById(`btn-${category}`);
+            if(activeBtn) {
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-600');
+                activeBtn.classList.add('bg-amber-400', 'text-slate-950', 'shadow-sm');
+            }
+
+            // إخفاء وإظهار الكروت
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-store') === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            checkNoResults();
+        }
+
+        // دالة البحث النصي الحي
+        function searchCoupons() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.coupon-card');
+
+            cards.forEach(card => {
+                const keywords = card.getAttribute('data-keywords').toLowerCase();
+                const title = card.querySelector('h2').innerText.toLowerCase();
+                
+                if (keywords.includes(query) || title.includes(query)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            checkNoResults();
+        }
+
+        // التحقق من وجود نتائج وإظهار رسالة عند خلوها
+        function checkNoResults() {
+            const visibleCards = document.querySelectorAll('.coupon-card:not(.hidden)');
+            const noResultsElement = document.getElementById('noResults');
+            if (visibleCards.length === 0) {
+                noResultsElement.classList.remove('hidden');
+            } else {
+                noResultsElement.classList.add('hidden');
+            }
         }
     </script>
 </body>
