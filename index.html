@@ -91,45 +91,7 @@
     <p class="text-sm sm:text-base mt-3 text-slate-500 font-medium max-w-md mx-auto px-2">
         اضغط على أي كوبون، سيُنسخ تلقائياً وتُفتح صفحة المتجر مباشرة لتطبيق الخصم.
     </p>
-
-    <div class="flex items-center justify-center gap-4 sm:gap-10 mt-7 text-slate-500">
-        <div class="text-center">
-            <p class="text-xl sm:text-2xl font-display text-slate-900" id="statTotal">6</p>
-            <p class="text-[10px] sm:text-[11px] font-bold mt-0.5">كود نشط</p>
-        </div>
-        <div class="w-px h-8 bg-slate-200"></div>
-        <div class="text-center">
-            <p class="text-xl sm:text-2xl font-display text-slate-900">4</p>
-            <p class="text-[10px] sm:text-[11px] font-bold mt-0.5">متاجر</p>
-        </div>
-        <div class="w-px h-8 bg-slate-200"></div>
-        <div class="text-center">
-            <p class="text-xl sm:text-2xl font-display text-slate-900">15%</p>
-            <p class="text-[10px] sm:text-[11px] font-bold mt-0.5">أعلى توفير</p>
-        </div>
-    </div>
 </header>
-
-<section class="w-full max-w-4xl mx-auto px-3 sm:px-4 mt-4 z-10 sticky top-2 sm:static">
-    <div class="card-surface backdrop-blur-md p-3 rounded-2xl max-w-2xl mx-auto space-y-3 shadow-md sm:shadow-sm">
-        <div class="relative">
-            <span class="absolute inset-y-0 right-3 flex items-center pr-1 text-slate-400 text-sm">🔍</span>
-            <input id="searchInput" oninput="onSearchInput()" type="text" placeholder="ابحث بالمتجر أو الكود... مثال: نون / D67"
-                class="focus-ring w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-amber-400 focus:bg-white transition-all text-right">
-            <button id="clearSearch" onclick="clearSearchInput()" aria-label="مسح البحث"
-                class="focus-ring hidden absolute inset-y-0 left-2.5 flex items-center text-slate-400 hover:text-slate-600 text-sm px-1">✕</button>
-        </div>
-        <div class="flex items-center justify-between gap-2">
-            <div class="flex gap-2 text-xs font-bold scroll-x -mx-1 px-1">
-                <button onclick="filterCategory('all')" id="btn-all" class="filter-btn focus-ring px-4 py-2 rounded-lg text-white shadow-sm" style="background:var(--gold-deep)">الكل</button>
-                <button onclick="filterCategory('noon')" id="btn-noon" class="filter-btn focus-ring px-4 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">نون</button>
-                <button onclick="filterCategory('fashion')" id="btn-fashion" class="filter-btn focus-ring px-4 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">أزياء وموضة</button>
-                <button onclick="filterCategory('kids')" id="btn-kids" class="filter-btn focus-ring px-4 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">أطفال وأمومة</button>
-            </div>
-        </div>
-        <p id="resultsCount" class="text-[11px] font-bold text-slate-400 text-center pt-0.5"></p>
-    </div>
-</section>
 
 <main class="container mx-auto px-3 sm:px-4 py-8 max-w-5xl flex-grow z-10">
     <div id="couponsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -298,11 +260,6 @@
 
     </div>
 
-    <div id="noResults" class="text-center py-14 text-slate-400 font-bold hidden">
-        <span class="text-3xl block mb-2">😢</span>
-        <p>لم نجد أكواداً تطابق بحثك</p>
-        <p class="text-xs font-medium mt-1">جرّب اسم متجر مختلف أو امسح كلمات البحث</p>
-    </div>
 </main>
 
 <footer class="w-full text-center py-6 text-slate-400 text-xs font-medium z-10 mt-6 border-t border-slate-200/70 bg-white/60">
@@ -318,20 +275,6 @@
 
 <script>
     let toastTimer = null;
-    let searchDebounce = null;
-    let activeCategory = 'all';
-
-    // توحيد الأحرف العربية المتشابهة (أ/إ/آ -> ا، ة -> ه) وإزالة التشكيل لتحسين نتائج البحث
-    function normalizeArabic(str){
-        return str
-            .toLowerCase()
-            .replace(/[\u064B-\u0652]/g, '')      // إزالة التشكيل
-            .replace(/[أإآا]/g, 'ا')
-            .replace(/ة/g, 'ه')
-            .replace(/ى/g, 'ي')
-            .replace(/\s+/g, ' ')
-            .trim();
-    }
 
     function copyAndRedirect(code, targetUrl, btnEl){
         const showToastAndGo = (success) => {
@@ -363,60 +306,6 @@
         }
     }
 
-    function filterCategory(category){
-        activeCategory = category;
-
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.remove('text-white');
-            btn.classList.add('bg-slate-100', 'text-slate-600');
-            btn.style.background = '';
-        });
-        const activeBtn = document.getElementById(`btn-${category}`);
-        if (activeBtn){
-            activeBtn.classList.remove('bg-slate-100', 'text-slate-600');
-            activeBtn.classList.add('text-white');
-            activeBtn.style.background = 'var(--gold-deep)';
-        }
-
-        applyFilters();
-    }
-
-    function onSearchInput(){
-        document.getElementById('clearSearch').classList.toggle('hidden', !document.getElementById('searchInput').value);
-        if (searchDebounce) clearTimeout(searchDebounce);
-        searchDebounce = setTimeout(applyFilters, 120);
-    }
-
-    function clearSearchInput(){
-        document.getElementById('searchInput').value = '';
-        document.getElementById('clearSearch').classList.add('hidden');
-        applyFilters();
-    }
-
-    // تطبيق الفلترة النصية وفلترة التصنيف معاً بدل تجاهل أحدهما للآخر
-    function applyFilters(){
-        const query = normalizeArabic(document.getElementById('searchInput').value);
-        const cards = document.querySelectorAll('.coupon-card');
-        let visibleCount = 0;
-
-        cards.forEach(card => {
-            const matchesCategory = activeCategory === 'all' || card.getAttribute('data-store') === activeCategory;
-            const keywords = normalizeArabic(card.getAttribute('data-keywords'));
-            const title = normalizeArabic(card.querySelector('h2').innerText);
-            const matchesQuery = !query || keywords.includes(query) || title.includes(query);
-
-            const visible = matchesCategory && matchesQuery;
-            card.classList.toggle('hidden', !visible);
-            if (visible) visibleCount++;
-        });
-
-        document.getElementById('noResults').classList.toggle('hidden', visibleCount !== 0);
-
-        const countEl = document.getElementById('resultsCount');
-        countEl.innerText = query || activeCategory !== 'all' ? `عدد النتائج: ${visibleCount}` : '';
-    }
-
-    document.getElementById('statTotal').innerText = document.querySelectorAll('.coupon-card').length;
 </script>
 </body>
 </html>
