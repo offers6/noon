@@ -80,10 +80,11 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://i.postimg.cc">
     <link rel="preload" as="image" href="https://i.postimg.cc/XJLbHzMF/nooon.png" fetchpriority="high">
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap"
         rel="stylesheet">
 
     <style>
@@ -119,7 +120,7 @@
 
         .card {
             width: 100%;
-            max-width: 620px;
+            max-width: 480px;
             padding: 26px 22px;
             text-align: center;
             background: var(--card-bg);
@@ -128,6 +129,12 @@
             min-height: 600px;
             display: flex;
             flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .card { max-width: 520px; padding: 34px 30px; }
+            .title { font-size: 32px; }
+            .subtitle { font-size: 18px; }
         }
 
         .banner-wrapper {
@@ -360,9 +367,16 @@
             .title { font-size: 23px; }
             .subtitle { font-size: 15px; }
             .coupon-box { font-size: 28px; padding: 12px 15px; }
-            .copy-btn, .shop-btn { font-size: 16px; }
-            .offer-details { font-size: 13px; }
-            .countdown .unit { min-width: 48px; }
+            .copy-btn, .shop-btn { font-size: 16px; min-height: 48px; }
+            .offer-details { font-size: 13px; padding: 12px; }
+            .countdown .unit { min-width: 48px; padding: 6px 4px; }
+            .countdown .unit .num { font-size: 19px; }
+        }
+
+        @media (max-width: 340px) {
+            .countdown { gap: 5px; }
+            .countdown .unit { min-width: 40px; }
+            .coupon-box { font-size: 24px; letter-spacing: 2px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -401,7 +415,7 @@
           مهم: خليه تاريخ حقيقي لعرض فعلاً بينتهي. عداد وهمي بيرجع لنفسه كل مرة يعتبر ممارسة مضللة
           وممكن يخالف سياسات إعلانات جوجل الخاصة بالإلحاح الكاذب (false urgency).
         -->
-        <div class="countdown-wrapper" id="countdownWrapper" data-end-date="2026-09-10T23:59:59">
+        <div class="countdown-wrapper" id="countdownWrapper" data-end-date="2026-10-14T23:59:59">
             <p class="countdown-label">⏰ العرض ينتهي خلال:</p>
             <div class="countdown" id="countdown" aria-live="polite">
                 <div class="unit"><span class="num" id="cd-days">--</span><span class="lbl">يوم</span></div>
