@@ -35,7 +35,7 @@
       "name": "كود خصم نون ZWR",
       "description": "كود خصم حصري على نون",
       "url": "https://www.noon.com",
-      "priceCurrency": "AED"
+      "priceCurrency": "EGP"
     }
     </script>
 
@@ -487,13 +487,14 @@
 
     <script>
         const COUPON_CODE = "ZWR";
-        const REDIRECT_URL = "https://www.noon.com"; // استبدل بـ affiliate link الحقيقي
+        const REDIRECT_URL = "https://www.noon.com"; // استبدل بـ affiliate link الحقيقي (مكان واحد بس)
 
         const couponCodeElement = document.getElementById("couponCode");
         const copyButton = document.getElementById("copyBtn");
         const shopButton = document.getElementById("shopBtn");
 
         let couponCopied = false;
+shopButton.href = REDIRECT_URL;
 
         copyButton.addEventListener("click", handleCopy);
         couponCodeElement.addEventListener("click", handleCopy);
@@ -560,12 +561,14 @@
         (function initCountdown() {
             const wrapper = document.getElementById("countdownWrapper");
             const endDate = new Date(wrapper.dataset.endDate).getTime();
+            if (isNaN(endDate)) { wrapper.hidden = true; return; }
             const elDays = document.getElementById("cd-days");
             const elHours = document.getElementById("cd-hours");
             const elMins = document.getElementById("cd-mins");
             const elSecs = document.getElementById("cd-secs");
             const countdownEl = document.getElementById("countdown");
 
+            let timerId = null;
             function pad(n) { return String(n).padStart(2, "0"); }
 
             function tick() {
@@ -573,12 +576,11 @@
                 const diff = endDate - now;
 
                 if (diff <= 0) {
-                    countdownEl.classList.add("expired");
-                    elDays.textContent = "00";
-                    elHours.textContent = "00";
-                    elMins.textContent = "00";
-                    elSecs.textContent = "00";
-                    clearInterval(timerId);
+                    if (timerId !== null) clearInterval(timerId);
+                    // العرض انتهى: نخفي العداد بدل ما نعرض أصفار
+                    wrapper.hidden = true;
+                    var v = document.querySelector(".offer-details .validity");
+                    if (v) v.textContent = "⏰ تحقق من التوفر قبل الشراء - قد يتغير العرض في أي وقت";
                     return;
                 }
 
@@ -594,7 +596,7 @@
             }
 
             tick();
-            const timerId = setInterval(tick, 1000);
+            if (endDate > Date.now()) timerId = setInterval(tick, 1000);
         })();
     </script>
 </body>
