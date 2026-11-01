@@ -9,14 +9,15 @@
     <meta name="description"
           content="كود خصم نون ZWR لمصر، وكود خصم نون ZV124 للسعودية والإمارات. احصل على خصم فوري عند التسوق من نون واختر الكود الخاص ببلدك.">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <link rel="canonical" href="https://example.com/noon-coupon">
+    <link rel="alternate" type="text/markdown" href="/index.md">
+    <link rel="canonical" href="https://noon-codes.com/">
 
     <!-- Open Graph (لمشاركة أفضل على فيسبوك/واتساب) -->
     <meta property="og:type" content="website">
     <meta property="og:locale" content="ar_AR">
     <meta property="og:title" content="كود خصم نون 2026 | ZWR لمصر و ZV124 للسعودية والإمارات">
     <meta property="og:description" content="كود ZWR لمصر وكود ZV124 للسعودية والإمارات - خصم فوري أثناء الشراء من نون">
-    <meta property="og:url" content="https://example.com/noon-coupon">
+    <meta property="og:url" content="https://noon-codes.com/">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
@@ -755,6 +756,30 @@
             tick();
             if (endDate > Date.now()) timerId = setInterval(tick, 1000);
         })();
+    </script>
+    <!-- WebMCP: كشف أدوات الصفحة لوكلاء الذكاء الاصطناعي -->
+    <script>
+    (function () {
+        if (!("modelContext" in document) || !document.modelContext.registerTool) return;
+        var codes = { egypt: "ZWR", gulf: "ZV124" };
+        document.modelContext.registerTool({
+            name: "get_noon_coupon",
+            description: "يعيد كود خصم نون المناسب للدولة: ZWR لمصر، وZV124 للسعودية والإمارات.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    country: { type: "string", enum: ["EG", "SA", "AE"], description: "رمز الدولة" }
+                },
+                required: ["country"]
+            },
+            execute: async function (args) {
+                var c = String(args.country || "").toUpperCase();
+                var code = c === "EG" ? codes.egypt : (c === "SA" || c === "AE") ? codes.gulf : null;
+                var text = code ? "كود الخصم: " + code + ". تحقق من ظهور الخصم قبل الدفع." : "دولة غير مدعومة.";
+                return { content: [{ type: "text", text: text }] };
+            }
+        });
+    })();
     </script>
 </body>
 </html>

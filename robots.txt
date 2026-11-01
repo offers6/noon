@@ -1,0 +1,26 @@
+# robots.txt - RFC 9309
+User-agent: *
+Content-Signal: ai-train=no, search=yes, ai-input=yes
+Allow: /
+
+# برامج زحف البحث (تظهر صفحتك في إجابات الذكاء الاصطناعي) - مسموحة
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# برامج زحف التدريب - ممنوعة
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+Sitemap: https://noon-codes.com/sitemap.xml
